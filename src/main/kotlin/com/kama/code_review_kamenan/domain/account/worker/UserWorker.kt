@@ -61,6 +61,50 @@ class UserWorker : UserDomain {
         return userRepository.countAllByUsername(username) > 0L
     }
 
+    override fun lock(username: String): OperationResult<Boolean> {
+        val errors: MutableMap<String, String> = mutableMapOf()
+        var data = false
+
+        val optionalUser = userRepository.findByUsername(username).orElse(null)
+
+        if (optionalUser == null) {
+            errors["userNotFound"] = "userNotFound"
+        } else {
+            optionalUser.locked = true
+            userRepository.save(optionalUser)
+
+            data = true
+        }
+
+        return OperationResult(data, errors)
+    }
+
+    override fun unlock(username: String): OperationResult<Boolean> {
+        val errors: MutableMap<String, String> = mutableMapOf()
+        var data = false
+
+        val optionalUser = userRepository.findByUsername(username).orElse(null)
+
+        if (optionalUser == null) {
+            errors["userNotFound"] = "userNotFound"
+        } else {
+            optionalUser.locked = false
+            userRepository.save(optionalUser)
+
+            data = true
+        }
+
+        return OperationResult(data, errors)
+    }
+
+    override fun forgotPassword(user: User): OperationResult<Boolean> {
+        TODO("Not yet implemented")
+    }
+
+    override fun updatePassword(user: User, newPassword: String): OperationResult<Boolean> {
+        TODO("Not yet implemented")
+    }
+
     override fun saveUser(model: User): OperationResult<User> {
         val errors: MutableMap<String, String> = mutableMapOf()
         var data: User? = null
@@ -115,48 +159,6 @@ class UserWorker : UserDomain {
                     optionalServiceProvider.profileVisible = true
 
                     data = userRepository.save(optionalServiceProvider)
-                }
-            }
-        }
-
-        return OperationResult(data, errors)
-    }
-
-    override fun lockCustomerAccount(id: Long): OperationResult<Boolean> {
-        val errors: MutableMap<String, String> = mutableMapOf()
-        var data = false
-
-        val optionalUser = userRepository.findById(id).orElse(null)
-
-        if (optionalUser == null) {
-            errors["userNotFound"] = "userNotFound"
-        } else {
-            when (findTypeBy(optionalUser.id)) {
-                UserType.CUSTOMER -> {
-                    optionalUser.locked = true
-
-                    data = true
-                }
-            }
-        }
-
-        return OperationResult(data, errors)
-    }
-
-    override fun unlockCustomerAccount(id: Long): OperationResult<Boolean> {
-        val errors: MutableMap<String, String> = mutableMapOf()
-        var data = false
-
-        val optionalUser = userRepository.findById(id).orElse(null)
-
-        if (optionalUser == null) {
-            errors["userNotFound"] = "userNotFound"
-        } else {
-            when (findTypeBy(optionalUser.id)) {
-                UserType.CUSTOMER -> {
-                    optionalUser.locked = false
-
-                    data = true
                 }
             }
         }

@@ -39,7 +39,7 @@ class MainController(
                 forwardTo("backend/admin/admin")
             }
 
-            UserType.CUSTOMER -> {
+            UserType.SERVICE_PROVIDER -> {
                 forwardTo("backend/service_provider/service_provider")
 //                val lostObjectTypes = lostObjectTypeDomain.findAll()
 //                model.addAttribute("lostObjectTypes", lostObjectTypes)

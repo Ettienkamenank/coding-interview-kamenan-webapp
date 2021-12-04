@@ -4,20 +4,20 @@ import com.kama.code_review_kamenan.application.controlForm.Color
 import com.kama.code_review_kamenan.application.controlForm.ControlForm
 import com.kama.code_review_kamenan.application.controller.BaseController
 import com.kama.code_review_kamenan.application.controller.ControllerEndpoint
+import com.kama.code_review_kamenan.application.event.CreateServiceProviderEvent
 import com.kama.code_review_kamenan.domain.account.entity.FolderSrc
 import com.kama.code_review_kamenan.domain.account.entity.ServiceProvider
+import com.kama.code_review_kamenan.domain.account.entity.User
 import com.kama.code_review_kamenan.domain.account.entity.UserType
 import com.kama.code_review_kamenan.domain.account.port.RoleDomain
 import com.kama.code_review_kamenan.domain.account.port.UserDomain
 import com.kama.code_review_kamenan.domain.activity_area.port.ActivityAreaDomain
 import com.kama.code_review_kamenan.infrastructure.local.storage.StorageService
+import org.springframework.context.ApplicationEventPublisher
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.multipart.MultipartFile
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.util.*
@@ -35,6 +35,7 @@ class AccountManagerController(
     private val roleDomain: RoleDomain,
     private val activityAreaDomain: ActivityAreaDomain,
     private val storageService: StorageService,
+    private val eventPublisher: ApplicationEventPublisher,
     private val messageSource: MessageSource
 ) : BaseController("/account/", ControllerEndpoint.ACCOUNT) {
 
@@ -135,6 +136,10 @@ class AccountManagerController(
 
                         val result = userDomain.saveUser(serviceProvider)
 
+                        if (result.isSuccess) {
+                            eventPublisher.publishEvent(CreateServiceProviderEvent(result.data as ServiceProvider))
+                        }
+
                         val err: MutableMap<String, String> = mutableMapOf()
                         if (result.errors!!.isNotEmpty()) {
                             result.errors.forEach { (key, value) ->
@@ -159,5 +164,35 @@ class AccountManagerController(
 
         return redirectTo(page)
     }
+
+    @GetMapping("/validate-account/{username}")
+    fun validateAccount(model: Model, @PathVariable username: String): String {
+        val user: User? = userDomain.findByUsername(username).orElse(null)
+
+        return if (user == null) {
+            forwardTo("failure-validate-account")
+        } else {
+            userDomain.unlock(user.username)
+
+            forwardTo("login")
+        }
+
+    }
+
+    /*
+    @GetMapping("/confirm-account/{username}")
+    fun confirmEmail( model : Model, @PathVariable("username") username : String ) : String {
+
+        val user : User? = userDomain.findByUsername( username ).orElse(null)
+
+        if ( user == null){
+            return forwardTo("/failure-confirm-account")
+        }
+
+        model.addAttribute("user", user)
+
+        return forwardTo("/confirm-account")
+    }
+     */
 
 }

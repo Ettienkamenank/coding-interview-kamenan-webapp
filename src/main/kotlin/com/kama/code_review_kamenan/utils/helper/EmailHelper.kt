@@ -1,5 +1,7 @@
 package com.kama.code_review_kamenan.utils.helper
 
+import com.kama.code_review_kamenan.application.controlForm.Url
+import com.kama.code_review_kamenan.domain.account.entity.ServiceProvider
 import com.kama.code_review_kamenan.domain.account.entity.User
 import org.springframework.mail.SimpleMailMessage
 import org.springframework.mail.javamail.JavaMailSender
@@ -27,24 +29,16 @@ class EmailHelper(
         javaMailSender.send(msg)
     }
 
-    fun registerEmail(user: User) {
+    fun registerEmail(serviceProvider: ServiceProvider) {
 
-        val baseUrl: String = "/email/"
+        val link: String = "http://localhost:8080/" + "account/validate-account/" + serviceProvider.username
 
-        val link: String = baseUrl + "confirm-account/" + user.username
-        val unsubscribeLink: String = baseUrl + "unsubscribe/" + user.username
+        val msg = SimpleMailMessage()
 
-        val context = Context()
-        context.setVariable("user", user)
-        context.setVariable("link", link)
-        context.setVariable("unsubscribe_link", unsubscribeLink)
+        msg.setTo(serviceProvider.contact.email)
+        msg.setSubject("VALIDATION DE VOTRE COMPTE")
+        msg.setText("Veuillez valider votre compte via le lien suivant : $link")
+        javaMailSender.send(msg)
 
-        val process = templateEngine.process("service/email/register-template", context)
-        val mimeMessage = javaMailSender.createMimeMessage()
-        val helper = MimeMessageHelper(mimeMessage)
-        helper.setSubject("Bienvenue " + user.firstname + " " + user.lastname)
-        helper.setText(process, true)
-        helper.setTo(user.contact.email)
-        javaMailSender.send(mimeMessage)
     }
 }
