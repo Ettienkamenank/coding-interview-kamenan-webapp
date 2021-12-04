@@ -166,6 +166,18 @@ class UserWorker : UserDomain {
         return OperationResult(data, errors)
     }
 
+    override fun findAllServiceProviders(): MutableList<ServiceProvider> {
+        val data: MutableList<ServiceProvider>
+
+        val result = userRepository.findAllServiceProviders(UserType.SERVICE_PROVIDER)
+
+        data = result.map {
+            it as ServiceProvider
+        }.toMutableList()
+
+        return data
+    }
+
     override fun authenticateUserForMobile(username: String, password: String): OperationResult<User> {
         val errors: MutableMap<String, String> = mutableMapOf()
         var data: User? = null

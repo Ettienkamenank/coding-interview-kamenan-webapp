@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--Header ============================================= -->
+<th:block th:replace="backend/fragments/fragment_head('Secteurs')"/>
+
+<!--Body ============================================= -->
+<body>
+
+<div id="app">
+
+    <div class="main-wrapper main-wrapper-1">
+
+        <!-- Navbar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_navbar"/>
+
+        <!-- Sidebar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_sidebar"/>
+
+
+        <!-- Main Content ============================================= -->
+        <div class="main-content">
+
+            <section class="section">
+
+                <div class="section-body">
+
+                    <div class="row">
+                        <div class="col-lg-12">
+
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Liste des prestataires</h4>
+                                </div>
+                                <div class="card-body">
+
+                                    <div class="table-responsive">
+                                        <table class="table table-striped" id="table-1">
+                                            <thead>
+                                            <tr>
+                                                <th>Nom</th>
+                                                <th>Metier</th>
+                                                <th>Status sur la plateforme</th>
+                                                <th>Actions</th>
+                                            </tr>
+                                            </thead>
+
+                                            <tbody>
+                                            <tr th:each="provider : ${serviceProviders}">
+
+                                                <td th:text="${provider.firstname + ' ' + provider.lastname}"></td>
+
+                                                <td th:text="${provider.activityArea.title}"></td>
+
+                                                <td th:if="${provider.profileVisible == true}">Visible</td>
+                                                <td th:if="${provider.profileVisible == false}">Invisible</td>
+
+                                                <td>
+                                                    <a th:if="${provider.profileVisible == false}"
+                                                       class="btn btn-primary" type="button" data-toggle="modal"
+                                                       data-target="#makeProfileVisibleModal"
+                                                       th:data-entity="${stringHelper.clean(provider.toJSON())}"
+                                                       onclick="onUpdate(this.getAttribute('data-entity'));">
+                                                        Rendre visible
+                                                    </a>
+                                                </td>
+
+                                            </tr>
+                                            </tbody>
+
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Extend Tontine Membership -->
+            <div class="modal fade" id="makeProfileVisibleModal" tabindex="-1" role="dialog"
+                 aria-labelledby="makeProfileVisibleModalTitle" aria-hidden="true">
+
+                <div th:insert="backend/fragments/modal/fragment_add_modal ::
+                                                   fragment_add_modal(title='Action',
+                                                   methodUrl='/dashboard/admin/service_provider/makeProfileVisible/',
+                                                   body = ~{ :: #makeProfileVisible_body})">
+
+                    <div class="modal-body" id="makeProfileVisible_body">
+                        <span>Rendre ce profile visible sur la plateforme</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_footer"/>
+
+    </div>
+
+</div>
+
+<!-- Scripts ============================================= -->
+<script type="application/javascript">
+    $(document).ready(function () {
+        $('#app-serviceProvider').attr('class', 'active');
+    });
+</script>
+
+<script type="application/javascript">
+    function onUpdate(json) {
+        var serviceProvider = jQuery.parseJSON(json.replace("'", "\\'"));
+        $('.model-id').val(serviceProvider.id);
+    }
+</script>
+
+</body>
+
+</html>

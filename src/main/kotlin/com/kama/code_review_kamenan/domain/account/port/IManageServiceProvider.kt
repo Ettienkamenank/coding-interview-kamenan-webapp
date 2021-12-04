@@ -13,4 +13,6 @@ interface IManageServiceProvider {
 
     fun makeServiceProviderVisible(id: Long): OperationResult<ServiceProvider>
 
+    fun findAllServiceProviders(): MutableList<ServiceProvider>
+
 }

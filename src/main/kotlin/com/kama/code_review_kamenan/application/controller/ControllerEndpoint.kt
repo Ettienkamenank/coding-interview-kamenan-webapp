@@ -10,7 +10,9 @@ object ControllerEndpoint {
 
     const val DASHBOARD_ADMIN_ACTIVITY_AREA = "${DASHBOARD_ADMIN}/activity_area"
 
-    private const val DASHBOARD_SERVICE_PROVIDER = "${DASHBOARD}/service-provider"
+    const val DASHBOARD_ADMIN_SERVICE_PROVIDER = "${DASHBOARD_ADMIN}/service_provider"
+
+    private const val DASHBOARD_SERVICE_PROVIDER = "${DASHBOARD}/service_provider"
 
     const val DASHBOARD_SERVICE_PROVIDER_PROFILE = "${DASHBOARD_SERVICE_PROVIDER}/profile"
 
