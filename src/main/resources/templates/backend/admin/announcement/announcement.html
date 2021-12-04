@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+    <!--Header ============================================= -->
+    <th:block th:replace="backend/fragments/fragment_head('Annonces')" />
+
+    <!--Body ============================================= -->
+    <body>
+
+        <div id="app">
+
+            <div class="main-wrapper main-wrapper-1">
+
+                <!-- Navbar ============================================= -->
+                <th:block th:replace="backend/fragments/fragment_navbar" />
+
+                <!-- Sidebar ============================================= -->
+                <th:block th:replace="backend/fragments/fragment_sidebar" />
+
+
+                <!-- Main Content ============================================= -->
+                <div class="main-content">
+
+                    <section class="section">
+
+
+
+                    </section>
+
+                </div>
+
+                <!-- Footer ============================================= -->
+                <th:block th:replace="backend/fragments/fragment_footer" />
+
+            </div>
+
+        </div>
+
+        <!-- Scripts ============================================= -->
+        <script type="application/javascript">
+            $(document).ready(function () {
+                $('#app-annonce').attr('class', 'active');
+            });
+        </script>
+
+    </body>
+
+</html>

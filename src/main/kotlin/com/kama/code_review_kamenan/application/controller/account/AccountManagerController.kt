@@ -179,20 +179,4 @@ class AccountManagerController(
 
     }
 
-    /*
-    @GetMapping("/confirm-account/{username}")
-    fun confirmEmail( model : Model, @PathVariable("username") username : String ) : String {
-
-        val user : User? = userDomain.findByUsername( username ).orElse(null)
-
-        if ( user == null){
-            return forwardTo("/failure-confirm-account")
-        }
-
-        model.addAttribute("user", user)
-
-        return forwardTo("/confirm-account")
-    }
-     */
-
 }

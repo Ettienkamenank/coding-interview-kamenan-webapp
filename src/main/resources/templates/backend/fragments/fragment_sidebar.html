@@ -4,7 +4,7 @@
         <div class="sidebar-brand">
             <a href="#">
                 <img alt="image" th:src="@{/backend/img/logo.png}" class="header-logo">
-                <span class="logo-name">Tontine</span>
+                <span class="logo-name">Coding</span>
             </a>
         </div>
         <ul class="sidebar-menu">
@@ -13,59 +13,40 @@
                 <span th:text="#{sidebar_menu}"></span>
             </li>
 
-            <li id="app-dashboard" class="dropdown">
+            <li id="app-annonce" class="dropdown" th:if="${user.actuator || user.admin}">
                 <a th:href="@{/backend-dashboard}" class="nav-link">
-                    <i data-feather="monitor"></i>
-                    <span th:text="#{sidebar_dashboard}"></span>
+                    <i data-feather="clipboard"></i>
+                    <span>Annonces</span>
                 </a>
             </li>
 
-            <li id="app-cities" class="dropdown">
-                <a th:href="@{/dashboard/backend/city/all_cities}" class="nav-link">
-                    <i data-feather="home"></i>
-                    <span th:text="#{sidebar_city}"></span>
-                </a>
-            </li>
-
-            <li id="app-declarations" class="dropdown">
+            <li id="app-profile" class="dropdown" th:if="${user.serviceProvider}">
                 <a href="#" class="nav-link">
-                    <i data-feather="edit"></i>
-                    <span th:text="#{sidebar_declaration}"></span>
+                    <i data-feather="user"></i>
+                    <span>Profile</span>
+                </a>
+            </li>
+
+            <li id="app-serviceProvider" class="dropdown">
+                <a href="#" class="nav-link">
+                    <i data-feather="truck"></i>
+                    <span>Prestataires</span>
                 </a>
             </li>
 
             <li id="app-lost-objects" class="dropdown">
-                <a th:href="@{/dashboard/backend/lost_object/all_lostObjectTypes}" class="nav-link">
-                    <i data-feather="package"></i>
-                    <span th:text="#{sidebar_lost_object_type}"></span>
+                <a th:href="@{/dashboard/admin/lost_object/all_lostObjectTypes}" class="nav-link">
+                    <i data-feather="users"></i>
+                    <span>Clients</span>
                 </a>
             </li>
 
-            <li id="app-payments" class="dropdown">
-                <a href="#" class="nav-link">
+            <li id="app-areas" class="dropdown">
+                <a th:href="@{/dashboard/admin/activity_area/allAreas}" class="nav-link">
                     <i data-feather="dollar-sign"></i>
-                    <span th:text="#{sidebar_payment}"></span>
+                    <span>Secteur d'activités</span>
                 </a>
             </li>
-
-            <li id="app-tags" class="dropdown">
-                <a th:href="@{/dashboard/backend/tag/all_tags}" class="nav-link">
-                    <i data-feather="flag"></i>
-                    <span th:text="#{sidebar_tag}"></span>
-                </a>
-            </li>
-
-            <li class="dropdown">
-                <a href="#" class="menu-toggle nav-link has-dropdown">
-                    <i data-feather="monitor"></i>
-                    <span th:text="#{sidebar_dashboard}"></span>
-                </a>
-                <ul class="dropdown-menu">
-                    <li class="active"><a class="nav-link" href="#">Dashboard 1</a></li>
-                    <li><a class="nav-link" href="#">Dashboard 2</a></li>
-                </ul>
-            </li>
-
 
         </ul>
     </aside>

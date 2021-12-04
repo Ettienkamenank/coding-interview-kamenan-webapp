@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+  <!--Header ============================================= -->
+  <th:block th:replace="backend/fragments/fragment_head('Secteurs')" />
+
+  <!--Body ============================================= -->
+  <body>
+
+    <div id="app">
+
+      <div class="main-wrapper main-wrapper-1">
+
+        <!-- Navbar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_navbar" />
+
+        <!-- Sidebar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_sidebar" />
+
+
+        <!-- Main Content ============================================= -->
+        <div class="main-content">
+
+          <section class="section">
+
+            <div class="section-body">
+
+              <div class="row">
+                <div class="col-lg-12">
+
+                  <div class="card">
+                    <div class="card-header">
+                      <h4>Liste des secteurs d'activités</h4>
+                    </div>
+                    <div class="card-body">
+
+                      <div class="col-lg-8">
+                        <a class="btn btn-primary"
+                           type="button" data-toggle="modal" data-target="#addCityModal">Ajouter</a>
+                      </div>
+                      <br><br>
+
+                      <div class="table-responsive">
+                        <table class="table table-striped" id="table-1">
+                          <thead>
+                          <tr>
+                            <th>Titre</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                          </tr>
+                          </thead>
+
+                          <tbody>
+                          <tr th:each="area : ${areas}">
+
+                            <td th:text="${area.title}"></td>
+
+                            <td class="align-middle" th:text="${area.description}"></td>
+                          </tr>
+                          </tbody>
+
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
+              </div>
+
+            </div>
+
+          </section>
+
+        </div>
+
+        <!-- Footer ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_footer" />
+
+      </div>
+
+    </div>
+
+    <!-- Scripts ============================================= -->
+    <script type="application/javascript">
+      $(document).ready(function () {
+        $('#app-areas').attr('class', 'active');
+      });
+    </script>
+
+  </body>
+
+</html>
