@@ -1,0 +1,35 @@
+<body xmlns:th="http://www.thymeleaf.org" th:fragment="body ( content )">
+
+  <div id="app">
+
+    <div class="main-wrapper main-wrapper-1">
+
+      <!-- Navbar ============================================= -->
+      <th:block th:replace="backend/fragments/fragment_navbar" />
+
+      <!-- Sidebar ============================================= -->
+      <th:block th:replace="backend/fragments/fragment_sidebar" />
+
+
+      <!-- Main Content ============================================= -->
+      <div class="main-content">
+
+        <section class="section">
+
+          <div th:replace="${content}">
+
+
+          </div>
+
+        </section>
+
+      </div>
+
+      <!-- Footer ============================================= -->
+      <th:block th:replace="backend/fragments/fragment_footer" />
+
+    </div>
+
+  </div>
+
+</body>
