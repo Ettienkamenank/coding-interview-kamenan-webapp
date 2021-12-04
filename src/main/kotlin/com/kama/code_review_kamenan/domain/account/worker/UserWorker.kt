@@ -30,15 +30,19 @@ class UserWorker : UserDomain {
             val optionalUser = userRepository.findByUsername(username)
             val badCredentialsError = "Le nom d'utilisateur ou le mot de passe est incorrect"
 
-            if (!optionalUser.isPresent) {
-                errors["credentials"] = badCredentialsError
-            } else {
+            if (optionalUser.isPresent) {
                 val user = optionalUser.get()
-                if (!BCryptPasswordEncoder().matches(password, user.password)) {
-                    errors["credentials"] = badCredentialsError
+                if (BCryptPasswordEncoder().matches(password, user.password)) {
+                    if (user.locked) {
+                        errors["accountLocked"] = "Veuillez valider votre compte via l'email qui vous a été transmis"
+                    } else {
+                        data = user
+                    }
                 } else {
-                    data = user
+                    errors["credentials"] = badCredentialsError
                 }
+            } else {
+                errors["credentials"] = badCredentialsError
             }
         }
 
@@ -62,7 +66,7 @@ class UserWorker : UserDomain {
         var data: User? = null
 
         if (model.contact.email.isEmpty()) {
-            errors["email"] = "empty_email"
+            errors["email"] = "emptyEmail"
         }
 
         if (model.contact.phoneNumber.isEmpty()) {

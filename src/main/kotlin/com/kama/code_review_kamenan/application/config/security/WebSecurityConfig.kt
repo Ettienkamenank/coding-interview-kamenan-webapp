@@ -39,7 +39,6 @@ constructor(
             .antMatchers(
                 "/account/login",
                 "/account/register",
-                "/account/forgot-password",
                 "/${RestControllerEndpoint.API_BASE_URL}/**",
                 "/${RestControllerEndpoint.API_BASE_SECURED_URL}/**"
             )

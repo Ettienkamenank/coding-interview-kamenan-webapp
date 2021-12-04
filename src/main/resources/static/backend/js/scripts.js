@@ -697,7 +697,7 @@ $(function () {
   //add default class on body tag
   jQuery("body").addClass("light");
   jQuery("body").addClass("light-sidebar");
-  jQuery("body").addClass("theme-orange");
+  jQuery("body").addClass("theme-green");
   // set theme default color
   $(".choose-theme li").removeClass("active");
   $(".choose-theme li[title|='white']").addClass("active");

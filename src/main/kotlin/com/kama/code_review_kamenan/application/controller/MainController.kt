@@ -19,13 +19,6 @@ class MainController(
     private val userDomain: UserDomain,
 ) : BaseController("", "") {
 
-    @GetMapping("/backend-dashboard")
-    fun backendDashboardPage(
-        model: Model
-    ): String {
-        return forwardTo("backend/dashboard")
-    }
-
 
     @GetMapping(value = ["/dashboard", "/dashboard/"])
     fun dashboardPage(
@@ -39,23 +32,20 @@ class MainController(
         return when (userDomain.findTypeBy(user.id)) {
 
             UserType.ACTUATOR -> {
-                forwardTo("backend/dashboard")
+                forwardTo("backend/admin/admin")
             }
 
-//            UserType.BACKOFFICE_ADMIN -> {
-//                forwardTo("backend/dashboard/dashboard_admin")
-//            }
-//
-//            UserType.CUSTOMER -> {
+            UserType.ADMIN -> {
+                forwardTo("backend/admin/admin")
+            }
+
+            UserType.CUSTOMER -> {
+                forwardTo("backend/service_provider/service_provider")
 //                val lostObjectTypes = lostObjectTypeDomain.findAll()
 //                model.addAttribute("lostObjectTypes", lostObjectTypes)
 //
 //                forwardTo("frontend/dashboard")
-//            }
-//
-//            UserType.COLLECTOR -> {
-//                forwardTo("frontend/dashboard")
-//            }
+            }
 
             else -> forwardTo("account/login")
         }

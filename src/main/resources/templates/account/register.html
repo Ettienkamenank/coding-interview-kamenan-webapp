@@ -1,98 +1,150 @@
 <!DOCTYPE html>
 <html lang="en">
 
-    <head>
-        <meta charset="UTF-8">
-        <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
-        <title>Code Review - Kamenan</title>
-        <!-- General CSS Files -->
-        <link rel="stylesheet" th:href="@{/backend/css/app.min.css}">
-        <link rel="stylesheet" th:href="@{/backend/bundles/jquery-selectric/selectric.css}">
-        <!-- Template CSS -->
-        <link rel="stylesheet" th:href="@{/backend/css/style.css}">
-        <link rel="stylesheet" th:href="@{/backend/css/components.css}">
-        <!-- Custom style CSS -->
-        <link rel="stylesheet" th:href="@{/backend/css/custom.css}">
-        <link rel='shortcut icon' type='image/x-icon' th:href="@{/backend/img/favicon.ico}" />
-    </head>
+<head>
+    <meta charset="UTF-8">
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no" name="viewport">
+    <title>Code Review - Kamenan</title>
+    <!-- General CSS Files -->
+    <link rel="stylesheet" th:href="@{/backend/css/app.min.css}">
+    <link rel="stylesheet" th:href="@{/backend/bundles/jquery-selectric/selectric.css}">
+    <!-- Template CSS -->
+    <link rel="stylesheet" th:href="@{/backend/css/style.css}">
+    <link rel="stylesheet" th:href="@{/backend/css/components.css}">
+    <!-- Custom style CSS -->
+    <link rel="stylesheet" th:href="@{/backend/css/custom.css}">
+    <link rel='shortcut icon' type='image/x-icon' th:href="@{/backend/img/favicon.ico}"/>
+</head>
 
-    <body>
-    <div class="loader"></div>
-    <div id="app">
-        <section class="section">
-            <div class="container mt-5">
-                <div class="row">
-                    <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
-                        <div class="card card-primary">
-                            <div class="card-header">
-                                <h4>Register</h4>
-                            </div>
-                            <div class="card-body">
-                                <form method="POST">
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label for="frist_name">First Name</label>
-                                            <input id="frist_name" type="text" class="form-control" name="frist_name" autofocus>
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="last_name">Last Name</label>
-                                            <input id="last_name" type="text" class="form-control" name="last_name">
-                                        </div>
+<body>
+<div class="loader"></div>
+<div id="app">
+    <section class="section">
+        <div class="container mt-5">
+            <div class="row">
+                <div class="col-12 col-sm-10 offset-sm-1 col-md-8 offset-md-2 col-lg-8 offset-lg-2 col-xl-8 offset-xl-2">
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h4>Register</h4>
+                        </div>
+                        <div class="card-body">
+
+                            <form method="POST" th:action="@{/account/register}" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label for="firstname">Prénom(s)</label>
+                                        <input id="firstname" type="text" class="form-control" name="firstname"
+                                               required autofocus>
+                                        <div class="invalid-feedback">Veuillez saisir votre prénom</div>
                                     </div>
-                                    <div class="form-group">
+                                    <div class="form-group col-6">
+                                        <label for="lastname">Nom</label>
+                                        <input id="lastname" type="text" class="form-control" name="lastname" required>
+                                        <div class="invalid-feedback">Veuillez saisir votre nom</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-6">
                                         <label for="email">Email</label>
-                                        <input id="email" type="email" class="form-control" name="email">
-                                        <div class="invalid-feedback">
+                                        <input id="email" type="text" class="form-control" name="email" required>
+                                        <div class="invalid-feedback">Veuillez saisir votre addresse mail</div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="username">Username</label>
+                                        <input id="username" type="text" class="form-control" name="username" required>
+                                        <div class="invalid-feedback">Veuillez saisir votre username</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label for="phoneNumber">Téléphone 1</label>
+                                        <input id="phoneNumber" type="number" class="form-control" name="phoneNumber" required>
+                                        <div class="invalid-feedback">Veuillez saisir votre contact</div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="phoneNumber2">Téléphone 2</label>
+                                        <input id="phoneNumber2" type="number" class="form-control" name="phoneNumber2">
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="biography">Biographie</label>
+                                    <textarea id="biography" class="form-control" name="biography" required></textarea>
+                                    <div class="invalid-feedback">Veuillez saisir votre biographie</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="activityArea">Secteur d'activé</label>
+                                    <select id="activityArea" class="form-control select2" name="activityArea">
+                                        <option th:each="area: ${activityAreas}" th:text="${area.title}"
+                                                th:value="${area.id}"></option>
+                                    </select>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label for="idCardFront">Face avant de votre piece d'identité</label>
+                                        <input id="idCardFront" type="file" class="form-control" name="idCardFront" required>
+                                        <div class="invalid-feedback">Veuillez uploader votre pièce d'identité</div>
+                                    </div>
+                                    <div class="form-group col-6">
+                                        <label for="idCardBack">Face arrière de votre piece d'identité</label>
+                                        <input id="idCardBack" type="file" class="form-control" name="idCardBack" required>
+                                        <div class="invalid-feedback">Veuillez uploader votre pièce d'identité</div>
+                                    </div>
+                                </div>
+
+                                <div class="row">
+                                    <div class="form-group col-6">
+                                        <label for="password" class="d-block">Mot de passe</label>
+                                        <input id="password" type="password" class="form-control pwstrength"
+                                               data-indicator="pwindicator"
+                                               name="password" required>
+                                        <div class="invalid-feedback">Veuillez saisir votre mot de passe</div>
+                                        <div id="pwindicator" class="pwindicator">
+                                            <div class="bar"></div>
+                                            <div class="label"></div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="form-group col-6">
-                                            <label for="password" class="d-block">Password</label>
-                                            <input id="password" type="password" class="form-control pwstrength" data-indicator="pwindicator"
-                                                   name="password">
-                                            <div id="pwindicator" class="pwindicator">
-                                                <div class="bar"></div>
-                                                <div class="label"></div>
-                                            </div>
-                                        </div>
-                                        <div class="form-group col-6">
-                                            <label for="password2" class="d-block">Password Confirmation</label>
-                                            <input id="password2" type="password" class="form-control" name="password-confirm">
-                                        </div>
+                                    <div class="form-group col-6">
+                                        <label for="password2" class="d-block">Confirmation du mot de passe</label>
+                                        <input id="password2" type="password" class="form-control"
+                                               name="password-confirm" required>
+                                        <div class="invalid-feedback">Veuillez confirmer votre mot de passe</div>
                                     </div>
-                                    <div class="form-group">
-                                        <div class="custom-control custom-checkbox">
-                                            <input type="checkbox" name="agree" class="custom-control-input" id="agree">
-                                            <label class="custom-control-label" for="agree">I agree with the terms and conditions</label>
-                                        </div>
-                                    </div>
-                                    <div class="form-group">
-                                        <button type="submit" class="btn btn-primary btn-lg btn-block">
-                                            Register
-                                        </button>
-                                    </div>
-                                </form>
-                            </div>
-                            <div class="mb-4 text-muted text-center">
-                                Déjà enregistré? <a th:href="@{/account/login}">Connexion</a>
-                            </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <button type="submit" class="btn btn-primary btn-lg btn-block">S'enregistrer
+                                    </button>
+                                </div>
+
+                            </form>
+                        </div>
+                        <div class="mb-4 text-muted text-center">
+                            Déjà enregistré? <a th:href="@{/account/login}">Connexion</a>
                         </div>
                     </div>
                 </div>
             </div>
-        </section>
-    </div>
-    <!-- General JS Scripts -->
-    <script th:src="@{/backend/js/app.min.js}"></script>
-    <!-- JS Libraies -->
-    <script th:src="@{/backend/bundles/jquery-pwstrength/jquery.pwstrength.min.js}"></script>
-    <script th:src="@{/backend/bundles/jquery-selectric/jquery.selectric.min.js}"></script>
-    <!-- Page Specific JS File -->
-    <script th:src="@{/backend/js/page/auth-register.js}"></script>
-    <!-- Template JS File -->
-    <script th:src="@{/backend/js/scripts.js}"></script>
-    <!-- Custom JS File -->
-    <script th:src="@{/backend/js/custom.js}"></script>
-    </body>
+        </div>
+    </section>
+</div>
+<!-- General JS Scripts -->
+<script th:src="@{/backend/js/app.min.js}"></script>
+<!-- JS Libraies -->
+<script th:src="@{/backend/bundles/jquery-pwstrength/jquery.pwstrength.min.js}"></script>
+<script th:src="@{/backend/bundles/jquery-selectric/jquery.selectric.min.js}"></script>
+<!-- Page Specific JS File -->
+<script th:src="@{/backend/js/page/auth-register.js}"></script>
+<!-- Template JS File -->
+<script th:src="@{/backend/js/scripts.js}"></script>
+<!-- Custom JS File -->
+<script th:src="@{/backend/js/custom.js}"></script>
+
+<script th:src="@{/backend/js/sweetalert2.min.js}"></script>
+</body>
 
 </html>
