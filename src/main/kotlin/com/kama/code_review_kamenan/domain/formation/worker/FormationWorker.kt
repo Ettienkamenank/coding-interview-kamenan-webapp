@@ -68,6 +68,9 @@ class FormationWorker : FormationDomain {
 
     override fun findAll(): List<Formation> = formationRepository.findAll()
 
+    override fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Formation> =
+        formationRepository.findAllByServiceProvider(serviceProvider)
+
     override fun count(): Long = formationRepository.count()
 
 }

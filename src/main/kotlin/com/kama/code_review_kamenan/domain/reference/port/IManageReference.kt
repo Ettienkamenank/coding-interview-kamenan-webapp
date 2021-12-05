@@ -21,6 +21,8 @@ interface IManageReference {
 
     fun findAll(): List<Reference>
 
+    fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Reference>
+
     fun count(): Long
 
 }

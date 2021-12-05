@@ -66,5 +66,8 @@ class ExperienceWorker : ExperienceDomain {
 
     override fun findAll(): List<Experience> = experienceRepository.findAll()
 
+    override fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Experience> =
+        experienceRepository.findAllByServiceProvider(serviceProvider)
+
     override fun count(): Long = experienceRepository.count()
 }

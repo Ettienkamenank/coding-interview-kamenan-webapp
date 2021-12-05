@@ -17,7 +17,7 @@ import java.util.*
  */
 
 @Service
-class ReferenceWorker: ReferenceDomain {
+class ReferenceWorker : ReferenceDomain {
 
     @Autowired
     lateinit var referenceRepository: ReferenceRepository
@@ -62,11 +62,15 @@ class ReferenceWorker: ReferenceDomain {
         return OperationResult(data, errors)
     }
 
-    override fun findByServiceProvider(serviceProvider: ServiceProvider): Optional<Reference> = referenceRepository.findByServiceProvider(serviceProvider)
+    override fun findByServiceProvider(serviceProvider: ServiceProvider): Optional<Reference> =
+        referenceRepository.findByServiceProvider(serviceProvider)
 
     override fun findById(id: Long): Optional<Reference> = referenceRepository.findById(id)
 
     override fun findAll(): List<Reference> = referenceRepository.findAll()
+
+    override fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Reference> =
+        referenceRepository.findAllByServiceProvider(serviceProvider)
 
     override fun count(): Long = referenceRepository.count()
 }

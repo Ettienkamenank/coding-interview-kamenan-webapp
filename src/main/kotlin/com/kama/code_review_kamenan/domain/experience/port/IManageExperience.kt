@@ -21,6 +21,8 @@ interface IManageExperience {
 
     fun findAll(): List<Experience>
 
+    fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Experience>
+
     fun count(): Long
 
 }

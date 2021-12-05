@@ -21,6 +21,8 @@ interface IManageFormation {
 
     fun findAll(): List<Formation>
 
+    fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Formation>
+
     fun count(): Long
 
 }

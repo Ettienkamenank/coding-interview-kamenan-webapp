@@ -17,4 +17,6 @@ interface FormationRepository: JpaRepository<Formation, Long> {
 
     fun findByServiceProvider(serviceProvider: ServiceProvider): Optional<Formation>
 
+    fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Formation>
+
 }

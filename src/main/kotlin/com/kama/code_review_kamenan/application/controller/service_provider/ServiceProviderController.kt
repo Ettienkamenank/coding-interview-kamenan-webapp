@@ -63,8 +63,8 @@ class ServiceProviderController(
 
                 val err: MutableMap<String, String> = mutableMapOf()
                 if (result.errors!!.isNotEmpty()) {
-                    result.errors.forEach {
-                            (key, value) -> err[key] = messageSource.getMessage(value, null, locale)
+                    result.errors.forEach { (key, value) ->
+                        err[key] = messageSource.getMessage(value, null, locale)
                     }
                 }
 
@@ -83,4 +83,5 @@ class ServiceProviderController(
         return redirectTo(url)
 
     }
+
 }

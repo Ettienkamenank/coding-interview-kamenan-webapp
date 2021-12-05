@@ -17,4 +17,6 @@ interface ReferenceRepository: JpaRepository<Reference, Long> {
 
     fun findByServiceProvider(serviceProvider: ServiceProvider): Optional<Reference>
 
+    fun findAllByServiceProvider(serviceProvider: ServiceProvider): MutableList<Reference>
+
 }

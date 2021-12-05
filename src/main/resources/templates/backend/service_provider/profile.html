@@ -1,10 +1,204 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--Header ============================================= -->
+<th:block th:replace="backend/fragments/fragment_head('Profile')"/>
+
+<!--Body ============================================= -->
 <body>
 
+<div id="app">
+
+    <div class="main-wrapper main-wrapper-1">
+
+        <!-- Navbar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_navbar"/>
+
+        <!-- Sidebar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_sidebar"/>
+
+
+        <!-- Main Content ============================================= -->
+        <div class="main-content">
+
+            <section class="section">
+
+                <div class="section-body">
+
+                    <div class="col-lg-8">
+                        <a class="btn btn-primary"
+                           type="button" data-toggle="modal" data-target="#addForModal">Ajouter Formation</a>
+
+                        <a class="btn btn-primary"
+                           type="button" data-toggle="modal" data-target="#addExpModal">Ajouter Experience</a>
+
+                        <a class="btn btn-primary"
+                           type="button" data-toggle="modal" data-target="#addRefModal">Ajouter Reference</a>
+                    </div>
+                    <br><br>
+
+                    <div class="row mt-sm-4">
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Info personnel</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="py-4">
+                                        <p class="clearfix">
+                                            <span class="float-left">Nom</span>
+                                            <span class="float-right text-muted"
+                                                  th:text="${provider.firstname + ' ' + provider.lastname}"></span>
+                                        </p>
+                                        <p class="clearfix">
+                                            <span class="float-left">Mail</span>
+                                            <span class="float-right text-muted"
+                                                  th:text="${provider.contact.email}"></span>
+                                        </p>
+                                        <p class="clearfix">
+                                            <span class="float-left">Téléphone</span>
+                                            <span class="float-right text-muted"
+                                                  th:text="${provider.contact.phoneNumber}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-8">
+                            <div class="card">
+                                <div class="padding-20">
+                                    <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#about"
+                                               role="tab"
+                                               aria-selected="true">About</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content tab-bordered" id="myTab3Content">
+                                        <div class="tab-pane fade show active" id="about" role="tabpanel"
+                                             aria-labelledby="home-tab2">
+                                            <div class="section-title">Biographie</div>
+                                            <p class="m-t-30" th:text="${provider.biography}"></p>
+
+                                            <div class="section-title">Formations</div>
+                                            <ul th:each="formation : ${formations}">
+                                                <li th:text="${formation.title + '   ||   ' + formation.description}"></li>
+                                            </ul>
+
+                                            <div class="section-title">Experiences</div>
+                                            <ul th:each="experience : ${experiences}">
+                                                <li th:text="${experience.title + '   ||   ' + experience.description}"></li>
+                                            </ul>
+
+                                            <div class="section-title">References</div>
+                                            <ul th:each="reference : ${references}">
+                                                <li th:text="${reference.title + '   ||   ' + reference.description + '   ||   ' + reference.link}"></li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Add Formation -->
+            <div class="modal fade" id="addForModal" tabindex="-1" role="dialog"
+                 aria-labelledby="appModalTitle" aria-hidden="true">
+                <div th:insert="backend/fragments/modal/fragment_add_modal ::
+                                           fragment_add_modal(title= 'Ajouter une formation',
+                                           methodUrl='/dashboard/service_provider/addFormation',
+                                           body = ~{ :: #modal_add_body})">
+
+                    <div class="modal-body" id="modal_add_body">
+                        <div class="col-lg-12">
+                            <label for="name">Titre</label>
+                            <input type="text" class=" form-control" id="name" name="title" required>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label for="description">Description</label>
+                            <textarea required id="description"  name="description" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Experience -->
+            <div class="modal fade" id="addExpModal" tabindex="-1" role="dialog"
+                 aria-labelledby="appModalTitle" aria-hidden="true">
+                <div th:insert="backend/fragments/modal/fragment_add_modal ::
+                                           fragment_add_modal(title= 'Ajouter une experience',
+                                           methodUrl='/dashboard/service_provider/addExperience',
+                                           body = ~{ :: #modal_add_bodyE})">
+
+                    <div class="modal-body" id="modal_add_bodyE">
+                        <div class="col-lg-12">
+                            <label for="nameE">Titre</label>
+                            <input type="text" class=" form-control" id="nameE" name="title" required>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label for="descriptionE">Description</label>
+                            <textarea required id="descriptionE"  name="description" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Add Reference -->
+            <div class="modal fade" id="addRefModal" tabindex="-1" role="dialog"
+                 aria-labelledby="appModalTitle" aria-hidden="true">
+                <div th:insert="backend/fragments/modal/fragment_add_modal ::
+                                           fragment_add_modal(title= 'Ajouter une experience',
+                                           methodUrl='/dashboard/service_provider/addReference',
+                                           body = ~{ :: #modal_add_bodyR})">
+
+                    <div class="modal-body" id="modal_add_bodyR">
+                        <div class="col-lg-12">
+                            <label for="nameR">Titre</label>
+                            <input type="text" class=" form-control" id="nameR" name="title" required>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label for="descriptionR">Description</label>
+                            <textarea required id="descriptionR"  name="description" class="form-control"></textarea>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label for="linkR">Titre</label>
+                            <input type="text" class=" form-control" id="linkR" name="link" required>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_footer"/>
+
+    </div>
+
+</div>
+
+<!-- Scripts ============================================= -->
+<script type="application/javascript">
+    $(document).ready(function () {
+        $('#app-profile').attr('class', 'active');
+    });
+</script>
+
+<script type="application/javascript">
+    function onUpdate(json) {
+        var annonce = jQuery.parseJSON(json.replace("'", "\\'"));
+        $('.model-id').val(annonce.id);
+    }
+</script>
+
 </body>
+
 </html>
