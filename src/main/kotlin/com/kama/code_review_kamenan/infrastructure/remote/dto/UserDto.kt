@@ -12,7 +12,7 @@ class UserDto(
     var lastname: String = "",
     var username: String = "",
     var email: String = "",
-    var phone: String = "",
+    var phoneNumber: String = "",
     var sessionToken: String = ""
 )
 
@@ -21,6 +21,6 @@ class UserFromMobile(
     var lastname: String = "",
     var email: String = "",
     var username: String = "",
-    var phone: String = "",
+    var phoneNumber: String = "",
     var password: String = ""
 )

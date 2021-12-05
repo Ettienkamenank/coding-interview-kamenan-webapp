@@ -6,6 +6,7 @@ import com.kama.code_review_kamenan.domain.entity.embeddable.Address
 import com.kama.code_review_kamenan.domain.entity.embeddable.Contact
 import com.fasterxml.jackson.annotation.JsonGetter
 import com.fasterxml.jackson.annotation.JsonIgnore
+import com.kama.code_review_kamenan.infrastructure.remote.dto.UserDto
 import org.springframework.security.core.GrantedAuthority
 import org.springframework.security.core.authority.SimpleGrantedAuthority
 import org.springframework.security.core.userdetails.UserDetails
@@ -149,14 +150,14 @@ open class User : BaseTableEntity, UserDetails {
         password = BCryptPasswordEncoder().encode(password)
     }
 
-//    fun toUserDto() = UserDto(
-//        id = id,
-//        firstname = "$firstname",
-//        lastname = "$lastname",
-//        username = "$username",
-//        email = contact.email,
-//        phone = contact.phone,
-//        sessionToken = credential.sessionToken
-//    )
+    fun toUserDto() = UserDto(
+        id = id,
+        firstname = "$firstname",
+        lastname = "$lastname",
+        username = "$username",
+        email = contact.email,
+        phoneNumber = contact.phoneNumber,
+        sessionToken = credential.sessionToken
+    )
 
 }
