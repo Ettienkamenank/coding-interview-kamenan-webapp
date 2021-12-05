@@ -143,6 +143,7 @@ open class User : BaseTableEntity, UserDetails {
         return roles!!.stream().findFirst().get().id
     }
 
+    @PrePersist
     public override fun onPrePersist() {
         super.onPrePersist()
         lang = "fr"

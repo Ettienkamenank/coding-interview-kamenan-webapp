@@ -3,6 +3,9 @@ package com.kama.code_review_kamenan.domain.announcement.entity
 import com.kama.code_review_kamenan.domain.account.entity.Customer
 import com.kama.code_review_kamenan.domain.activity_area.entity.ActivityArea
 import com.kama.code_review_kamenan.domain.entity.common.BaseEntity
+import com.kama.code_review_kamenan.infrastructure.remote.dto.ActivityAreaDto
+import com.kama.code_review_kamenan.infrastructure.remote.dto.AnnouncementDto
+import com.kama.code_review_kamenan.infrastructure.remote.dto.UserDto
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
@@ -30,5 +33,13 @@ class Announcement() : BaseEntity() {
 
     @ManyToOne(targetEntity = ActivityArea::class, optional = false)
     var activityArea: ActivityArea? = null
+
+    fun toAnnouncementDto() = AnnouncementDto(
+        id = id,
+        title = title,
+        description = description,
+        customer = customer!!.toUserDto(),
+        activityArea = activityArea!!.toActivityAreaDto()
+    )
 
 }

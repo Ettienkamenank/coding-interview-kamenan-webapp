@@ -21,4 +21,8 @@ object RestControllerEndpoint {
      */
     const val API_SECURED_USER_ENDPOINT = "$API_BASE_SECURED_URL/user"
 
+    const val API_SECURED_ACTIVITY_AREA_ENDPOINT = "$API_BASE_SECURED_URL/activity-area"
+
+    const val API_SECURED_ANNOUNCEMENT_ENDPOINT = "$API_BASE_SECURED_URL/announcement"
+
 }

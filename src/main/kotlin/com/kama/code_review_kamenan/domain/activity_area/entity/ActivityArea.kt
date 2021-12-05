@@ -2,6 +2,7 @@ package com.kama.code_review_kamenan.domain.activity_area.entity
 
 import com.kama.code_review_kamenan.domain.account.entity.ServiceProvider
 import com.kama.code_review_kamenan.domain.entity.common.BaseEntity
+import com.kama.code_review_kamenan.infrastructure.remote.dto.ActivityAreaDto
 import javax.persistence.Column
 import javax.persistence.Entity
 import javax.persistence.ManyToOne
@@ -23,8 +24,12 @@ class ActivityArea() : BaseEntity() {
 
     var state: Int = 0
 
-    constructor( title: String ) : this() {
+    constructor(title: String) : this() {
         this.title = title
     }
+
+    fun toActivityAreaDto() = ActivityAreaDto(
+        id = id, title = title, description = description
+    )
 
 }
