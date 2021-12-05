@@ -38,7 +38,7 @@ class Announcement() : BaseEntity() {
         id = id,
         title = title,
         description = description,
-        customer = customer!!.toUserDto(),
+        customer = customer!!.toCustomerDto(),
         activityArea = activityArea!!.toActivityAreaDto()
     )
 

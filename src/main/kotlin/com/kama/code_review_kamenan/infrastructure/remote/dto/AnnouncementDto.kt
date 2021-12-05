@@ -1,7 +1,5 @@
 package com.kama.code_review_kamenan.infrastructure.remote.dto
 
-import java.util.*
-
 
 /**
  * @Author: Ettien Kamenan
@@ -12,7 +10,7 @@ class AnnouncementDto(
     var id: Long = -1L,
     var title: String = "",
     var description: String = "",
-    var customer: UserDto? = null,
+    var customer: CustomerDto? = null,
     var activityArea: ActivityAreaDto? = null
 )
 

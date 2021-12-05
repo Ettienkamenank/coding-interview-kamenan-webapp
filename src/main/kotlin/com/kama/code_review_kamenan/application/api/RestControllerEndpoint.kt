@@ -2,9 +2,9 @@ package com.kama.code_review_kamenan.application.api
 
 object RestControllerEndpoint {
 
-    private const val API_BASE_URL = "api/v1"
+    const val API_BASE_URL = "api/v1"
 
-    private const val API_BASE_SECURED_URL = "api/secured/v1"
+    const val API_BASE_SECURED_URL = "api/secured/v1"
 
     /**
      * Mobile app API

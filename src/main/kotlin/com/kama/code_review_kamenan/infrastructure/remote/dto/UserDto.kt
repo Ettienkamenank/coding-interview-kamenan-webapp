@@ -16,6 +16,15 @@ class UserDto(
     var sessionToken: String = ""
 )
 
+class CustomerDto(
+    var id: Long = -1L,
+    var firstname: String = "",
+    var lastname: String = "",
+    var username: String = "",
+    var email: String = "",
+    var phoneNumber: String = ""
+)
+
 class UserFromMobile(
     var firstname: String = "",
     var lastname: String = "",
