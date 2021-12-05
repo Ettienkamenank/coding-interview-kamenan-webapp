@@ -24,18 +24,18 @@ class UserWorker : UserDomain {
         var data: User? = null
 
         if (username.isEmpty() || password.isEmpty()) {
-            errors["credentials"] = "Le nom d'utilisateur et le mot de passe sont obligatoires"
+            errors["credentials"] = "identifierWrong"
         }
 
         if (errors.isEmpty()) {
             val optionalUser = userRepository.findByUsername(username)
-            val badCredentialsError = "Le nom d'utilisateur ou le mot de passe est incorrect"
+            val badCredentialsError = "identifierWrong"
 
             if (optionalUser.isPresent) {
                 val user = optionalUser.get()
                 if (BCryptPasswordEncoder().matches(password, user.password)) {
                     if (user.locked) {
-                        errors["accountLocked"] = "Veuillez valider votre compte via l'email qui vous a été transmis"
+                        errors["accountLocked"] = "validateAccount"
                     } else {
                         data = user
                     }
@@ -115,19 +115,19 @@ class UserWorker : UserDomain {
         }
 
         if (model.contact.phoneNumber.isEmpty()) {
-            errors["phone"] = "empty_phone"
+            errors["phone"] = "emptyPhone"
         }
 
         if (model.firstname.isNullOrEmpty()) {
-            errors["firstname"] = "empty_firstName"
+            errors["firstname"] = "emptyFirstName"
         }
 
         if (model.lastname.isNullOrEmpty()) {
-            errors["lastname"] = "empty_lastName"
+            errors["lastname"] = "emptyLastName"
         }
 
         if (model.username.isEmpty()) {
-            errors["username"] = "empty_username"
+            errors["username"] = "emptyUsername"
         }
 
         if (errors.isEmpty()) {
@@ -195,7 +195,7 @@ class UserWorker : UserDomain {
         val errors: MutableMap<String, String> = mutableMapOf()
         var data: User? = null
 
-        val badCredentialsError = "Identifier or Password is incorrect"
+        val badCredentialsError = "identifierWrong"
         val optionalUser = userRepository.findByUsername(username)
 
         if (!optionalUser.isPresent) {
@@ -224,7 +224,7 @@ class UserWorker : UserDomain {
         val optionalUser = userRepository.findByCredentialSessionToken(sessionToken)
 
         if (!optionalUser.isPresent) {
-            errors["sessionToken"] = "Bad session token"
+            errors["sessionToken"] = "badToken"
         }
 
         optionalUser.ifPresent {

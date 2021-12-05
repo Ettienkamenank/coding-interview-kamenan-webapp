@@ -1,5 +1,6 @@
 package com.kama.code_review_kamenan.application.api.activity_area
 
+import com.kama.code_review_kamenan.application.api.ApiConstant
 import com.kama.code_review_kamenan.application.api.RestControllerEndpoint
 import com.kama.code_review_kamenan.application.common.ResponseBody
 import com.kama.code_review_kamenan.application.common.ResponseSummary
@@ -36,24 +37,31 @@ class ActivityAreaRestController(
     fun getAllActivityAreas(
         @SessionToken token: String?,
         locale: Locale
-    ): ResponseEntity<ResponseBody<List<ActivityAreaDto>>> {
+    ): Map<String, Any> {
 
-        var responseStatus: HttpStatus = HttpStatus.OK
-        val errors: MutableMap<String, String> = mutableMapOf()
-        var data: List<ActivityAreaDto>? = listOf()
+        val response: MutableMap<String, Any> = mutableMapOf()
+        response[ApiConstant.ERROR] = true
 
-        if (token == null) {
-            errors["session"] = messageSource.getMessage("emptyToken", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        when (token) {
+            null -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyToken", null, locale)
+            }
+            else -> {
+                val user = userDomain.findUserBySessionToken(token)
 
-        if (errors.isEmpty()) {
-            userDomain.findUserBySessionToken(token!!).ifPresent { user ->
-                data = activityAreaDomain.findAll().map { it.toActivityAreaDto() }
+                if (user.isPresent) {
+                    val data = activityAreaDomain.findAll().map { it.toActivityAreaDto() }
+
+                    response[ApiConstant.ERROR] = false
+                    response[ApiConstant.DATA] = data
+                    response[ApiConstant.MESSAGE] = "Liste"
+                } else {
+                    response[ApiConstant.MESSAGE] = "Session expiré"
+                }
             }
         }
 
-        return ResponseEntity(ResponseBody(data, ResponseSummary(errors)), responseStatus)
+        return response
     }
 
 }

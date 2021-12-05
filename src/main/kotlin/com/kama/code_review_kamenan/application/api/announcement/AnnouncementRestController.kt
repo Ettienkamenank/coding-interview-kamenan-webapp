@@ -1,8 +1,7 @@
 package com.kama.code_review_kamenan.application.api.announcement
 
+import com.kama.code_review_kamenan.application.api.ApiConstant
 import com.kama.code_review_kamenan.application.api.RestControllerEndpoint
-import com.kama.code_review_kamenan.application.common.ResponseBody
-import com.kama.code_review_kamenan.application.common.ResponseSummary
 import com.kama.code_review_kamenan.application.resolver.SessionToken
 import com.kama.code_review_kamenan.domain.account.entity.Customer
 import com.kama.code_review_kamenan.domain.account.port.UserDomain
@@ -16,11 +15,8 @@ import com.kama.code_review_kamenan.domain.announcement_comment.entity.Announcem
 import com.kama.code_review_kamenan.domain.announcement_comment.port.AnnouncementCommentDomain
 import com.kama.code_review_kamenan.infrastructure.remote.dto.AnnouncementActionFromMobile
 import com.kama.code_review_kamenan.infrastructure.remote.dto.AnnouncementCommentFromMobile
-import com.kama.code_review_kamenan.infrastructure.remote.dto.AnnouncementDto
 import com.kama.code_review_kamenan.infrastructure.remote.dto.AnnouncementFromMobile
 import org.springframework.context.MessageSource
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -46,24 +42,31 @@ class AnnouncementRestController(
     fun getAllAnnouncements(
         @SessionToken token: String?,
         locale: Locale
-    ): ResponseEntity<ResponseBody<List<AnnouncementDto>>> {
+    ): Map<String, Any> {
 
-        var responseStatus: HttpStatus = HttpStatus.OK
-        val errors: MutableMap<String, String> = mutableMapOf()
-        var data: List<AnnouncementDto>? = listOf()
+        val response: MutableMap<String, Any> = mutableMapOf()
+        response[ApiConstant.ERROR] = true
 
-        if (token == null) {
-            errors["session"] = messageSource.getMessage("emptyToken", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        when (token) {
+            null -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyToken", null, locale)
+            }
+            else -> {
+                val user = userDomain.findUserBySessionToken(token)
 
-        if (errors.isEmpty()) {
-            userDomain.findUserBySessionToken(token!!).ifPresent { user ->
-                data = announcementDomain.findAll().map { it.toAnnouncementDto() }
+                if (user.isPresent) {
+                    val data = announcementDomain.findAll().map { it.toAnnouncementDto() }
+
+                    response[ApiConstant.ERROR] = false
+                    response[ApiConstant.DATA] = data
+                    response[ApiConstant.MESSAGE] = "Liste"
+                } else {
+                    response[ApiConstant.MESSAGE] = "Session expiré"
+                }
             }
         }
 
-        return ResponseEntity(ResponseBody(data, ResponseSummary(errors)), responseStatus)
+        return response
     }
 
     @PostMapping(value = ["/create"])
@@ -71,54 +74,50 @@ class AnnouncementRestController(
         @SessionToken token: String?,
         @RequestBody(required = true) announcementToAdd: AnnouncementFromMobile,
         locale: Locale
-    ): ResponseEntity<ResponseBody<Boolean>> {
-        var responseStatus: HttpStatus = HttpStatus.OK
-        var errors: MutableMap<String, String> = mutableMapOf()
-        var data: Boolean? = false
+    ): Map<String, Any> {
 
-        if (token == null) {
-            errors["session"] = messageSource.getMessage("emptyToken", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        val response: MutableMap<String, Any> = mutableMapOf()
+        response[ApiConstant.ERROR] = true
 
-        if (announcementToAdd.title.isEmpty()) {
-            errors["emptyTitle"] = messageSource.getMessage("emptyTitle", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        when {
+            announcementToAdd.title.isEmpty() -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyTitle", null, locale)
+            }
+            announcementToAdd.description.isEmpty() -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyDescription", null, locale)
+            }
+            token == null -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyToken", null, locale)
+            }
+            else -> {
+                val user = userDomain.findUserBySessionToken(token)
 
-        if (announcementToAdd.description.isEmpty()) {
-            errors["emptyDescription"] = messageSource.getMessage("emptyDescription", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+                if (user.isPresent) {
+                    activityAreaDomain.findById(announcementToAdd.activityAreaId.toLong()).ifPresent { activityArea ->
+                        val announcement = Announcement()
+                        announcement.title = announcementToAdd.title
+                        announcement.description = announcementToAdd.description
+                        announcement.customer = user.get() as Customer
+                        announcement.activityArea = activityArea
 
-        if (errors.isEmpty()) {
-            userDomain.findUserBySessionToken(token!!).ifPresent { user ->
-                activityAreaDomain.findById(announcementToAdd.activityAreaId.toLong()).ifPresent { activityArea ->
+                        val result = announcementDomain.save(announcement)
 
-                    val announcement = Announcement()
-                    announcement.title = announcementToAdd.title
-                    announcement.description = announcementToAdd.description
-                    announcement.customer = user as Customer
-                    announcement.activityArea = activityArea
-
-                    val result = announcementDomain.save(announcement)
-
-                    if (result.isSuccess) {
-                        errors = result.errors!!
-                        data = true
-                    } else {
-                        data = false
-                        result.errors!!.forEach { (key, value) ->
-                            errors[key] = messageSource.getMessage(value, null, locale)
+                        if (result.isSuccess) {
+                            response[ApiConstant.ERROR] = false
+                            response[ApiConstant.DATA] = true
+                            response[ApiConstant.MESSAGE] = "Annonce créé avec success"
+                        } else {
+                            response[ApiConstant.MESSAGE] =
+                                messageSource.getMessage(result.errors!!.values.first(), null, locale)
                         }
                     }
-
+                } else {
+                    response[ApiConstant.MESSAGE] = "Session expiré"
                 }
-
             }
         }
 
-        return ResponseEntity(ResponseBody(data, ResponseSummary(errors)), responseStatus)
+        return response
     }
 
     @PostMapping(value = ["/report"])
@@ -126,53 +125,52 @@ class AnnouncementRestController(
         @SessionToken token: String?,
         @RequestBody(required = true) announcementActionToAdd: AnnouncementActionFromMobile,
         locale: Locale
-    ): ResponseEntity<ResponseBody<Boolean>> {
-        var responseStatus: HttpStatus = HttpStatus.OK
-        var errors: MutableMap<String, String> = mutableMapOf()
-        var data: Boolean? = false
+    ): Map<String, Any> {
 
-        if (token == null) {
-            errors["session"] = messageSource.getMessage("emptyToken", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        val response: MutableMap<String, Any> = mutableMapOf()
+        response[ApiConstant.ERROR] = true
 
-        if (announcementActionToAdd.comment.isEmpty()) {
-            errors["emptyComment"] = messageSource.getMessage("emptyComment", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        when {
+            announcementActionToAdd.comment.isEmpty() -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyComment", null, locale)
+            }
+            announcementActionToAdd.announcementId.isEmpty() -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("announcementNotFound", null, locale)
+            }
+            token == null -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyToken", null, locale)
+            }
+            else -> {
+                val user = userDomain.findUserBySessionToken(token)
 
-        if (announcementActionToAdd.announcementId.isEmpty()) {
-            errors["announcementNotFound"] = messageSource.getMessage("announcementNotFound", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+                if (user.isPresent) {
+                    announcementDomain.findById(announcementActionToAdd.announcementId.toLong())
+                        .ifPresent { announcement ->
 
-        if (errors.isEmpty()) {
-            userDomain.findUserBySessionToken(token!!).ifPresent { user ->
-                announcementDomain.findById(announcementActionToAdd.announcementId.toLong())
-                    .ifPresent { announcement ->
+                            val announcementAction = AnnouncementAction()
+                            announcementAction.comment = announcementActionToAdd.comment
+                            announcementAction.type = AnnouncementActionType.REPORT
+                            announcementAction.user = user.get()
+                            announcementAction.announcement = announcement
 
-                        val announcementAction = AnnouncementAction()
-                        announcementAction.comment = announcementActionToAdd.comment
-                        announcementAction.type = AnnouncementActionType.REPORT
-                        announcementAction.user = user
-                        announcementAction.announcement = announcement
+                            val result = announcementActionDomain.save(announcementAction)
 
-                        val result = announcementActionDomain.save(announcementAction)
-
-                        if (result.isSuccess) {
-                            errors = result.errors!!
-                            data = true
-                        } else {
-                            data = false
-                            result.errors!!.forEach { (key, value) ->
-                                errors[key] = messageSource.getMessage(value, null, locale)
+                            if (result.isSuccess) {
+                                response[ApiConstant.ERROR] = false
+                                response[ApiConstant.DATA] = true
+                                response[ApiConstant.MESSAGE] = "Annonce signalée"
+                            } else {
+                                response[ApiConstant.MESSAGE] =
+                                    messageSource.getMessage(result.errors!!.values.first(), null, locale)
                             }
                         }
-                    }
+                } else {
+                    response[ApiConstant.MESSAGE] = "Session expiré"
+                }
             }
         }
 
-        return ResponseEntity(ResponseBody(data, ResponseSummary(errors)), responseStatus)
+        return response
     }
 
     @PostMapping(value = ["/comment"])
@@ -180,52 +178,51 @@ class AnnouncementRestController(
         @SessionToken token: String?,
         @RequestBody(required = true) announcementCommentToAdd: AnnouncementCommentFromMobile,
         locale: Locale
-    ): ResponseEntity<ResponseBody<Boolean>> {
-        var responseStatus: HttpStatus = HttpStatus.OK
-        var errors: MutableMap<String, String> = mutableMapOf()
-        var data: Boolean? = false
+    ): Map<String, Any> {
 
-        if (token == null) {
-            errors["session"] = messageSource.getMessage("emptyToken", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        val response: MutableMap<String, Any> = mutableMapOf()
+        response[ApiConstant.ERROR] = true
 
-        if (announcementCommentToAdd.comment.isEmpty()) {
-            errors["emptyComment"] = messageSource.getMessage("emptyComment", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+        when {
+            announcementCommentToAdd.comment.isEmpty() -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyComment", null, locale)
+            }
+            announcementCommentToAdd.announcementId.isEmpty() -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("announcementNotFound", null, locale)
+            }
+            token == null -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyToken", null, locale)
+            }
+            else -> {
+                val user = userDomain.findUserBySessionToken(token)
 
-        if (announcementCommentToAdd.announcementId.isEmpty()) {
-            errors["announcementNotFound"] = messageSource.getMessage("announcementNotFound", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
+                if (user.isPresent) {
+                    announcementDomain.findById(announcementCommentToAdd.announcementId.toLong())
+                        .ifPresent { announcement ->
 
-        if (errors.isEmpty()) {
-            userDomain.findUserBySessionToken(token!!).ifPresent { user ->
-                announcementDomain.findById(announcementCommentToAdd.announcementId.toLong())
-                    .ifPresent { announcement ->
+                            val announcementComment = AnnouncementComment()
+                            announcementComment.comment = announcementCommentToAdd.comment
+                            announcementComment.user = user.get()
+                            announcementComment.announcement = announcement
 
-                        val announcementComment = AnnouncementComment()
-                        announcementComment.comment = announcementCommentToAdd.comment
-                        announcementComment.user = user
-                        announcementComment.announcement = announcement
+                            val result = announcementCommentDomain.save(announcementComment)
 
-                        val result = announcementCommentDomain.save(announcementComment)
-
-                        if (result.isSuccess) {
-                            errors = result.errors!!
-                            data = true
-                        } else {
-                            data = false
-                            result.errors!!.forEach { (key, value) ->
-                                errors[key] = messageSource.getMessage(value, null, locale)
+                            if (result.isSuccess) {
+                                response[ApiConstant.ERROR] = false
+                                response[ApiConstant.DATA] = true
+                                response[ApiConstant.MESSAGE] = "Annonce commentée"
+                            } else {
+                                response[ApiConstant.MESSAGE] =
+                                    messageSource.getMessage(result.errors!!.values.first(), null, locale)
                             }
                         }
-                    }
+                } else {
+                    response[ApiConstant.MESSAGE] = "Session expiré"
+                }
             }
         }
 
-        return ResponseEntity(ResponseBody(data, ResponseSummary(errors)), responseStatus)
+        return response
     }
 
 }

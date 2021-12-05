@@ -1,5 +1,6 @@
 package com.kama.code_review_kamenan.application.api.user
 
+import com.kama.code_review_kamenan.application.api.ApiConstant
 import com.kama.code_review_kamenan.application.api.RestControllerEndpoint
 import com.kama.code_review_kamenan.application.common.ResponseBody
 import com.kama.code_review_kamenan.application.common.ResponseSummary
@@ -7,8 +8,6 @@ import com.kama.code_review_kamenan.application.resolver.SessionToken
 import com.kama.code_review_kamenan.domain.account.port.UserDomain
 import com.kama.code_review_kamenan.infrastructure.remote.dto.UserDto
 import org.springframework.context.MessageSource
-import org.springframework.http.HttpStatus
-import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import java.util.*
 
@@ -27,50 +26,57 @@ class UserSecuredRestController(
 ) {
 
     @PostMapping(value = ["/logout"])
-    fun logout(@SessionToken token: String?, locale: Locale): ResponseEntity<ResponseBody<Boolean>> {
+    fun logout(@SessionToken token: String?, locale: Locale): Map<String, Any> {
 
-        var responseStatus: HttpStatus = HttpStatus.OK
+        val response: MutableMap<String, Any> = mutableMapOf()
+        response[ApiConstant.ERROR] = true
 
-        var errors: MutableMap<String, String> = mutableMapOf()
-        var data: Boolean? = false
+        when (token) {
+            null -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("emptyToken", null, locale)
+            }
+            else -> {
+                val result = userDomain.logoutUserForMobile(token)
 
-        if (token == null) {
-            errors["session"] = messageSource.getMessage("empty_token", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
+                if (result.isSuccess) {
+                    response[ApiConstant.ERROR] = false
+                    response[ApiConstant.DATA] = result.data!!
+                    response[ApiConstant.MESSAGE] = "Deconnexion reussi"
+                } else {
+                    response[ApiConstant.MESSAGE] =
+                        messageSource.getMessage(result.errors!!.values.first(), null, locale)
+                }
+            }
         }
-
-        if (errors.isEmpty()) {
-            val result = userDomain.logoutUserForMobile(token!!)
-            errors = result.errors!!
-            data = result.data
-        }
-
-        return ResponseEntity(ResponseBody(data, ResponseSummary(errors)), responseStatus)
+        return response
     }
 
     @GetMapping(value = ["/findUser"])
     fun getUserById(
         @RequestParam("userId", required = false) user_id: String?,
         locale: Locale
-    ): ResponseEntity<ResponseBody<UserDto>> {
+    ): Map<String, Any> {
 
-        var responseStatus: HttpStatus = HttpStatus.OK
+        val response: MutableMap<String, Any> = mutableMapOf()
+        response[ApiConstant.ERROR] = true
 
-        val errors: MutableMap<String, String> = mutableMapOf()
-        var data = UserDto()
+        when (user_id) {
+            null -> {
+                response[ApiConstant.MESSAGE] = messageSource.getMessage("userNotFound", null, locale)
+            }
+            else -> {
+                val result = userDomain.findUserById(user_id.toLong())
 
-        if (user_id == null) {
-            errors["userNotFound"] = messageSource.getMessage("userNotFound", null, locale)
-            responseStatus = HttpStatus.FORBIDDEN
-        }
-
-        if (errors.isEmpty()) {
-            userDomain.findUserById(user_id!!.toLong()).ifPresent {
-                data = it.toUserDto()
+                if (result.isPresent) {
+                    response[ApiConstant.ERROR] = false
+                    response[ApiConstant.DATA] = result.get().toUserDto()
+                    response[ApiConstant.MESSAGE] = "User trouvé"
+                } else {
+                    response[ApiConstant.MESSAGE] = "Aucun user trouvé"
+                }
             }
         }
-
-        return ResponseEntity(ResponseBody(data, ResponseSummary(errors)), responseStatus)
+        return response
     }
 
 }
