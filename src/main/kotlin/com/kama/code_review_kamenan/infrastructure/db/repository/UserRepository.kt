@@ -21,5 +21,5 @@ interface UserRepository : JpaRepository<User, Long> {
     fun findTypeBy(id: Long): String
 
     @Query(value = "SELECT * FROM user_account U WHERE U.user_type = ?1", nativeQuery = true)
-    fun findAllServiceProviders(type: String): MutableList<User>
+    fun findAllUsersByType(type: String): MutableList<User>
 }

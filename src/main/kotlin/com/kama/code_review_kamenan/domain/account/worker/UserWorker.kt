@@ -1,5 +1,6 @@
 package com.kama.code_review_kamenan.domain.account.worker
 
+import com.kama.code_review_kamenan.domain.account.entity.Customer
 import com.kama.code_review_kamenan.domain.account.entity.ServiceProvider
 import com.kama.code_review_kamenan.domain.account.entity.User
 import com.kama.code_review_kamenan.domain.account.entity.UserType
@@ -169,10 +170,22 @@ class UserWorker : UserDomain {
     override fun findAllServiceProviders(): MutableList<ServiceProvider> {
         val data: MutableList<ServiceProvider>
 
-        val result = userRepository.findAllServiceProviders(UserType.SERVICE_PROVIDER)
+        val result = userRepository.findAllUsersByType(UserType.SERVICE_PROVIDER)
 
         data = result.map {
             it as ServiceProvider
+        }.toMutableList()
+
+        return data
+    }
+
+    override fun findAllCustomers(): MutableList<Customer> {
+        val data: MutableList<Customer>
+
+        val result = userRepository.findAllUsersByType(UserType.CUSTOMER)
+
+        data = result.map {
+            it as Customer
         }.toMutableList()
 
         return data

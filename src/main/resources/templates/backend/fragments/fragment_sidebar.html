@@ -13,35 +13,42 @@
                 <span th:text="#{sidebar_menu}"></span>
             </li>
 
-            <li id="app-annonce" class="dropdown" th:if="${user.actuator || user.admin}">
-                <a th:href="@{/backend-dashboard}" class="nav-link">
-                    <i data-feather="clipboard"></i>
-                    <span>Annonces</span>
+            <li id="app-home" class="dropdown" th:if="${user.serviceProvider}">
+                <a th:href="@{/dashboard/service_provider/home}" class="nav-link">
+                    <i data-feather="user"></i>
+                    <span>Accueil</span>
                 </a>
             </li>
 
             <li id="app-profile" class="dropdown" th:if="${user.serviceProvider}">
-                <a href="#" class="nav-link">
+                <a th:href="@{/dashboard/service_provider/profile/allCustomers}" class="nav-link">
                     <i data-feather="user"></i>
                     <span>Profile</span>
                 </a>
             </li>
 
-            <li id="app-serviceProvider" class="dropdown">
+            <li id="app-annonce" class="dropdown" th:if="${user.actuator || user.admin}">
+                <a th:href="@{/dashboard/admin/announcement/allAnnouncements}" class="nav-link">
+                    <i data-feather="clipboard"></i>
+                    <span>Annonces</span>
+                </a>
+            </li>
+
+            <li id="app-serviceProvider" class="dropdown" th:if="${user.actuator || user.admin}">
                 <a th:href="@{/dashboard/admin/service_provider/allServiceProviders}" class="nav-link">
                     <i data-feather="truck"></i>
                     <span>Prestataires</span>
                 </a>
             </li>
 
-            <li id="app-lost-objects" class="dropdown">
-                <a th:href="@{/dashboard/admin/activity_area/allAreas}" class="nav-link">
+            <li id="app-client" class="dropdown" th:if="${user.actuator || user.admin}">
+                <a th:href="@{/dashboard/admin/customer/allCustomers}" class="nav-link">
                     <i data-feather="users"></i>
                     <span>Clients</span>
                 </a>
             </li>
 
-            <li id="app-areas" class="dropdown">
+            <li id="app-areas" class="dropdown" th:if="${user.actuator || user.admin}">
                 <a th:href="@{/dashboard/admin/activity_area/allAreas}" class="nav-link">
                     <i data-feather="dollar-sign"></i>
                     <span>Secteur d'activités</span>
