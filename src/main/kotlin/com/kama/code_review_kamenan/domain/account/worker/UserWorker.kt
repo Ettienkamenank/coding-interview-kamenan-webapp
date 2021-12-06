@@ -24,7 +24,7 @@ class UserWorker : UserDomain {
         var data: User? = null
 
         if (username.isEmpty() || password.isEmpty()) {
-            errors["credentials"] = "identifierWrong"
+            errors["credentials"] = "credentialsRequired"
         }
 
         if (errors.isEmpty()) {
