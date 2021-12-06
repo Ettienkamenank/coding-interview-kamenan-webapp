@@ -13,10 +13,10 @@
                 <span th:text="#{sidebar_menu}"></span>
             </li>
 
-            <li id="app-home" class="dropdown" th:if="${user.serviceProvider}">
-                <a th:href="@{/dashboard/service_provider/home}" class="nav-link">
-                    <i data-feather="home"></i>
-                    <span>Accueil</span>
+            <li id="app-annonce" class="dropdown">
+                <a th:href="@{/dashboard/announcement/allAnnouncements}" class="nav-link">
+                    <i data-feather="clipboard"></i>
+                    <span>Annonces</span>
                 </a>
             </li>
 
@@ -24,13 +24,6 @@
                 <a th:href="@{/dashboard/service_provider/profile}" class="nav-link">
                     <i data-feather="user"></i>
                     <span>Profile</span>
-                </a>
-            </li>
-
-            <li id="app-annonce" class="dropdown" th:if="${user.actuator || user.admin}">
-                <a th:href="@{/dashboard/admin/announcement/allAnnouncements}" class="nav-link">
-                    <i data-feather="clipboard"></i>
-                    <span>Annonces</span>
                 </a>
             </li>
 

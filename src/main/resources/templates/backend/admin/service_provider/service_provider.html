@@ -57,10 +57,7 @@
 
                                                 <td>
                                                     <a th:if="${provider.profileVisible == false}"
-                                                       class="btn btn-primary" type="button" data-toggle="modal"
-                                                       data-target="#makeProfileVisibleModal"
-                                                       th:data-entity="${stringHelper.clean(provider.toJSON())}"
-                                                       onclick="onUpdate(this.getAttribute('data-entity'));">
+                                                       th:href="@{/dashboard/admin/service_provider/validateAccount/__${provider.id}__}">
                                                         Rendre visible
                                                     </a>
                                                 </td>
@@ -79,22 +76,6 @@
                 </div>
 
             </section>
-
-            <!-- Extend Tontine Membership -->
-            <div class="modal fade" id="makeProfileVisibleModal" tabindex="-1" role="dialog"
-                 aria-labelledby="makeProfileVisibleModalTitle" aria-hidden="true">
-
-                <div th:insert="backend/fragments/modal/fragment_add_modal ::
-                                                   fragment_add_modal(title='Action',
-                                                   methodUrl='/dashboard/admin/service_provider/makeProfileVisible/',
-                                                   body = ~{ :: #makeProfileVisible_body})">
-
-                    <div class="modal-body" id="makeProfileVisible_body">
-                        <span>Rendre ce profile visible sur la plateforme</span>
-                    </div>
-
-                </div>
-            </div>
 
         </div>
 

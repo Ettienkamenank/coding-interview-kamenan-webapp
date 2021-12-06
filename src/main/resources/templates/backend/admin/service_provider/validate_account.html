@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<!--Header ============================================= -->
+<th:block th:replace="backend/fragments/fragment_head('Valider le compte')"/>
+
+<!--Body ============================================= -->
+<body>
+
+<div id="app">
+
+    <div class="main-wrapper main-wrapper-1">
+
+        <!-- Navbar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_navbar"/>
+
+        <!-- Sidebar ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_sidebar"/>
+
+
+        <!-- Main Content ============================================= -->
+        <div class="main-content">
+
+            <section class="section">
+
+                <div class="section-body">
+
+                    <div class="col-lg-8">
+                        <a th:if="${provider.profileVisible == false}"
+                           class="btn btn-primary" type="button" data-toggle="modal"
+                           data-target="#makeProfileVisibleModal"
+                           th:data-entity="${stringHelper.clean(provider.toJSON())}"
+                           onclick="onUpdate(this.getAttribute('data-entity'));">
+                            Valider le compte
+                        </a>
+                    </div>
+                    <br><br>
+
+                    <div class="row mt-sm-4">
+                        <div class="col-12 col-md-12 col-lg-4">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h4>Info personnel</h4>
+                                </div>
+                                <div class="card-body">
+                                    <div class="py-4">
+                                        <p class="clearfix">
+                                            <span class="float-left">Nom</span>
+                                            <span class="float-right text-muted"
+                                                  th:text="${provider.firstname + ' ' + provider.lastname}"></span>
+                                        </p>
+                                        <p class="clearfix">
+                                            <span class="float-left">Mail</span>
+                                            <span class="float-right text-muted"
+                                                  th:text="${provider.contact.email}"></span>
+                                        </p>
+                                        <p class="clearfix">
+                                            <span class="float-left">Téléphone</span>
+                                            <span class="float-right text-muted"
+                                                  th:text="${provider.contact.phoneNumber}"></span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-12 col-lg-8">
+                            <div class="card">
+                                <div class="padding-20">
+                                    <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                                        <li class="nav-item">
+                                            <a class="nav-link active" id="home-tab2" data-toggle="tab" href="#about"
+                                               role="tab"
+                                               aria-selected="true">About</a>
+                                        </li>
+                                    </ul>
+                                    <div class="tab-content tab-bordered" id="myTab3Content">
+                                        <div class="tab-pane fade show active" id="about" role="tabpanel"
+                                             aria-labelledby="home-tab2">
+                                            <div class="section-title">Biographie</div>
+                                            <p class="m-t-30" th:text="${provider.biography}"></p>
+
+                                            <div id="aniimated-thumbnials" class="list-unstyled row clearfix">
+                                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <a th:href="@{'/'+rootLocation+'/id_cards/'+provider.idCardFront}"
+                                                       data-sub-html="Demo Description">
+                                                        <img class="img-responsive thumbnail"
+                                                             th:src="${'/'+rootLocation+'/id_cards/'+provider.idCardFront}"
+                                                             alt="">
+                                                    </a>
+                                                </div>
+
+                                                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <a th:href="@{'/'+rootLocation+'/id_cards/'+provider.idCardBack}"
+                                                       data-sub-html="Demo Description">
+                                                        <img class="img-responsive thumbnail"
+                                                             th:src="${'/'+rootLocation+'/id_cards/'+provider.idCardBack}"
+                                                             alt="">
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+
+            </section>
+
+            <!-- Add Formation -->
+            <div class="modal fade" id="addForModal" tabindex="-1" role="dialog"
+                 aria-labelledby="appModalTitle" aria-hidden="true">
+                <div th:insert="backend/fragments/modal/fragment_add_modal ::
+                                           fragment_add_modal(title= 'Ajouter une formation',
+                                           methodUrl='/dashboard/admin/service_provider/validateAccount/'+__${provider.id}__,
+                                           body = ~{ :: #modal_add_body})">
+
+                    <div class="modal-body" id="modal_add_body">
+                        <div class="col-lg-12">
+                            <label for="name">Titre</label>
+                            <input type="text" class=" form-control" id="name" name="title" required>
+                        </div>
+
+                        <div class="col-lg-12">
+                            <label for="description">Description</label>
+                            <textarea required id="description" name="description" class="form-control"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- Extend Tontine Membership -->
+            <div class="modal fade" id="makeProfileVisibleModal" tabindex="-1" role="dialog"
+                 aria-labelledby="makeProfileVisibleModalTitle" aria-hidden="true">
+
+                <div th:insert="backend/fragments/modal/fragment_add_modal ::
+                                                   fragment_add_modal(title='Action',
+                                                   methodUrl='/dashboard/admin/service_provider/makeProfileVisible/',
+                                                   body = ~{ :: #makeProfileVisible_body})">
+
+                    <div class="modal-body" id="makeProfileVisible_body">
+                        <span>Rendre ce profile visible sur la plateforme</span>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Footer ============================================= -->
+        <th:block th:replace="backend/fragments/fragment_footer"/>
+
+    </div>
+
+</div>
+
+<!-- Scripts ============================================= -->
+<script type="application/javascript">
+    $(document).ready(function () {
+        $('#app-serviceProvider').attr('class', 'active');
+    });
+</script>
+
+<script type="application/javascript">
+    function onUpdate(json) {
+        var provider = jQuery.parseJSON(json.replace("'", "\\'"));
+        $('.model-id').val(provider.id);
+    }
+</script>
+
+</body>
+
+</html>

@@ -49,6 +49,7 @@ class MainController(
                 user as ServiceProvider
                 val announcements = user.activityArea?.let { announcementDomain.findAllByActivityArea(it) }
                 model.addAttribute("announcements", announcements)
+                model.addAttribute("profileVisible", user.profileVisible)
 
                 forwardTo("backend/service_provider/service_provider")
             }

@@ -52,7 +52,9 @@ class UserProfileController(
             UserType.SERVICE_PROVIDER -> {
                 user as ServiceProvider
                 val announcements = user.activityArea?.let { announcementDomain.findAllByActivityArea(it) }
+
                 model.addAttribute("announcements", announcements)
+                model.addAttribute("profileVisible", user.profileVisible)
 
                 forwardTo("service_provider")
             }

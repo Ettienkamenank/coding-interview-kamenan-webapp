@@ -14,7 +14,7 @@ object ControllerEndpoint {
 
     const val DASHBOARD_ADMIN_CUSTOMER = "${DASHBOARD_ADMIN}/customer"
 
-    const val DASHBOARD_ADMIN_ANNOUNCEMENT = "${DASHBOARD_ADMIN}/announcement"
+    const val DASHBOARD_ANNOUNCEMENT = "${DASHBOARD}/announcement"
 
     const val DASHBOARD_SERVICE_PROVIDER = "${DASHBOARD}/service_provider"
 

@@ -10,10 +10,7 @@ import com.kama.code_review_kamenan.utils.OperationResult
 import org.springframework.context.MessageSource
 import org.springframework.stereotype.Controller
 import org.springframework.ui.Model
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestMapping
-import org.springframework.web.bind.annotation.RequestParam
+import org.springframework.web.bind.annotation.*
 import org.springframework.web.servlet.mvc.support.RedirectAttributes
 import java.util.*
 
@@ -38,6 +35,29 @@ class ServiceProviderController(
         model.addAttribute("serviceProviders", serviceProviders)
 
         return forwardTo("service_provider")
+    }
+
+    @GetMapping("/validateAccount/{id}")
+    fun goToValidateAccount(
+        model: Model, @PathVariable id: String,
+        locale: Locale
+    ): String {
+        when {
+            id.isEmpty() -> {
+                ControlForm.model(
+                    model,
+                    messageSource.getMessage("userNotFound", null, locale),
+                    Color.Red
+                )
+            }
+            else -> {
+                userDomain.findUserById(id.toLong()).ifPresent {
+                    model.addAttribute("provider", it)
+                }
+            }
+        }
+
+        return forwardTo("validate_account")
     }
 
     @PostMapping("/makeProfileVisible")

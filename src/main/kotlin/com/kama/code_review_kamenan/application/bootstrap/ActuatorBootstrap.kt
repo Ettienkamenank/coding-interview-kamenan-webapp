@@ -1,8 +1,6 @@
 package com.kama.code_review_kamenan.application.bootstrap
 
-import com.kama.code_review_kamenan.domain.account.entity.Actuator
-import com.kama.code_review_kamenan.domain.account.entity.Admin
-import com.kama.code_review_kamenan.domain.account.entity.UserType
+import com.kama.code_review_kamenan.domain.account.entity.*
 import com.kama.code_review_kamenan.domain.account.port.RoleDomain
 import com.kama.code_review_kamenan.domain.account.port.UserDomain
 import java.util.*
@@ -38,6 +36,20 @@ object ActuatorBootstrap {
                 admin.contact.phoneNumber ="+225 0700000000"
                 admin.enabled = true
                 userDomain.saveUser(admin)
+            }
+
+            roleDomain.findByName(UserType.CUSTOMER).ifPresent { role ->
+                val client = Customer()
+
+                client.firstname = "Client"
+                client.lastname = "Mobile"
+                client.username = "client"
+                client.password = "grant"
+                client.roles = Collections.singleton(role)
+                client.contact.email ="client@gmail.com"
+                client.contact.phoneNumber ="+225 0756838980"
+                client.enabled = true
+                userDomain.saveUser(client)
             }
         }
     }
